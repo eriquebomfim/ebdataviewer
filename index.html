@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title></title>
+	<meta name="viewport" content="width=device-width">
+	<meta charset="utf-8">	
+	<link rel="stylesheet" href="Libraries/DataTables-1.10.18/css/jquery.dataTables.css">
+<link type="text/css" rel="stylesheet" href="Libraries/DataTables-1.10.18/css/scroller.datatables.min.css">	
+	<link rel="stylesheet" href="Libraries/EBDataViewer/apexcharts.css">
+	<style>
+		*{ text-decoration: none;}
+		.cmp{
+			width: 300px;
+		}
+		#controls{
+			display: flex;
+			flex: 0 32%;
+		}
+		.btnFilter{
+			display 				: inline-block;
+			border-radius 	: 15px;
+			background-color: rgba(30,123,144,1);
+			color 					: #fff;
+			font-size 			: 0.8em;
+			margin-right 		: 1em;
+			margin-top 			: 0.3em
+		}
+		.btnFilter span{
+			margin 					:	0.5em 1em 0 0.8em;
+			line-height 		: 1.5em;
+			float 					: left;
+		}
+		.btnFilter div:first-child{
+			font-size 			: 0.7em;
+			line-height 		: 0.5em;
+			text-align 			: left;
+		}
+		.btnFilter a{
+			color 					: #666;
+			background-color: #fff;
+			float 					: right;
+			border-radius 	: 20px;
+			padding 				: 1px 7px;
+			text-decoration : none;
+			font-weight 		: bold;
+			margin 					: 0.2em;
+			font-size 			: 1.5em;
+		}
+		.wide{
+			width: 100%;
+		}
+		table th{
+			background-color: #eaeaea;
+		}
+		table td{
+			border:1px solid #eaeaea;
+		}
+
+	</style>
+	<script type="text/javascript" src="Libraries/jquery/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript" src="Libraries/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="Libraries/Moment/moment.min.js"></script>	
+	<script type="text/javascript" src="Libraries/EBDataViewer/apexcharts.js"></script>
+	<script type="text/javascript" src="Libraries/EBDataViewer/ebdataviewer.js"></script>
+	<script type="text/javascript" src="cars.json"></script>
+	<script type="text/javascript" src="app.js"></script>
+</head>
+<body>
+<div id="application">
+	<h1>CARS</h1>
+	<div id="activeFilters"></div>
+	<div id="controls"></div>
+	<div id="grid"></div>
+</div>
+</body>
+</html>
