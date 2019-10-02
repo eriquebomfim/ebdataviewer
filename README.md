@@ -25,7 +25,7 @@ Hence that I had no time enough to create a documentation, almost all code is co
 - Apexcharts.js
 
 
-## Instalation
+## Installation
 
 Follow the example application CARS to create yours.
 In resume, you gonna need:
