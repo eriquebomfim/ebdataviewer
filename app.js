@@ -51,11 +51,15 @@ app.setStore(window.sampleData.dataset);
 
 /**
 * DIMENSIONS
-* The smallest information piece (data) extratec from a dataset. This
+*
+* The smallest information piece (data) extracted from a dataset. This
 * can be customized and rendered as you wish; It corresponds to the E from
 * acroname ETL
-*
-*
+* @params <mixed> 
+* name <string>   : a machine name for your dimension
+* label <string>  : a label for field when rendered in a table
+* expr <function> : a function which argument is the value from dataset, so you can custom 
+*                   its output 
 */
 
 app.createDimension({
@@ -96,6 +100,12 @@ app.createDimension({
 
 /**
 * CUBE
+* 
+* is an arrangement of dimensions in order to construct information
+* useful when dealing with tables
+* @param <mixed>
+* name <string> a give name for your cube
+* title <string> a title to be rendered in component
 */
 
 app.createCube({
@@ -120,8 +130,22 @@ app.createCube({
 	'dPower'
 	]
 });
+
 /**
 * COMPONENTS
+* constructors that create interative HTML components
+* literal javascript object
+*
+* [cmp] - the main class of components
+* [cmpTable] - component responsible for rendering cubes as tables; also is parent class for others 
+* components
+* [cmpTableWithSubtotal] - an heritance of cmpTable, performs a groupment by reduce duplicates and add
+* a counter as subtotals
+* ------------------------------------------------------------------
+* Following components are a dependency of Apexcharts library:
+*
+* [cmpPiechart] - a Pizza chart - also a heritance of tableSubtotal
+* [cmpBarChart] - a Bar Chart  - also a heritance of tablesubtotal
 */
 app.init([
 {

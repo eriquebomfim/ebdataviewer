@@ -1,0 +1,8 @@
+EBDataViewer.js
+An opensource javascript library to help you create business intelligence components
+for web application building
+@author ERIQUE BOMFIM <erique.bomfim@gmail.com July.2019
+@dependences jquery-2.x, apexcharts, dataTables
+
+
+
