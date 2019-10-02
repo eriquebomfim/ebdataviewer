@@ -20,9 +20,9 @@ Hence that I had no time enough to create a documentation, almost all code is co
 
 ## Dependencies:
 
-jquery-2.1.3.min.js
-DataTables-1.10.18
-Apexcharts.js
+- jquery-2.1.3.min.js
+- DataTables-1.10.18
+- Apexcharts.js
 
 
 ## Instalation
@@ -50,6 +50,6 @@ paypal: erique.bomfim@gmail.com
 
 ## You can talk to me
 
-erique.bomfim@gmail.com
-twitter: BomfimErique
-github: eriquebomfim
+- erique.bomfim@gmail.com
+- twitter: BomfimErique
+- github: eriquebomfim
