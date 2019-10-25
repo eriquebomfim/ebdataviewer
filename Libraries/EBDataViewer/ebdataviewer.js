@@ -7,13 +7,13 @@
 */
 
 
-/*
-* compares
-* @description helps you to find similarity of some object and other
-* @obj <mixed> object to be searched for
-* @arr <midex> array of objects
-* @return <boolean> true if object was found in array
-*/
+	/*
+	* compares
+	* @description helps you to find similarity of some object and other
+	* @obj <mixed> object to be searched for
+	* @arr <midex> array of objects
+	* @return <boolean> true if object was found in array
+	*/
 
 	$.compares = function(obj, arr){
 
@@ -38,6 +38,17 @@
 		return rs;
 	}
 
+	$.escapeSpecialChars = function(text){
+		text = text.toLowerCase();
+    text = text.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');
+    text = text.replace(new RegExp('[ÉÈÊ]','gi'), 'e');
+    text = text.replace(new RegExp('[ÍÌÎ]','gi'), 'i');
+    text = text.replace(new RegExp('[ÓÒÔÕ]','gi'), 'o');
+    text = text.replace(new RegExp('[ÚÙÛ]','gi'), 'u');
+    text = text.replace(new RegExp('[Ç]','gi'), 'c');
+    return text;
+	}
+
 	$.classify = function(data, _filters){
 
 		 var _order,_arr;
@@ -47,7 +58,7 @@
 
 			 _arr.sort(function(a,b){
 
-				 _order = _filters[_s]['order'] == 'desc' ? 1 : -1;
+				 _order = _filters[_s]['order'] == 'asc' ? 1 : -1;
 
 			  if ( a[_filters[_s]['field']] < b[_filters[_s]['field']])
 					return -1 * _order;
@@ -121,6 +132,10 @@
 
 				}
 
+				if (arguments && arguments[0].hasOwnProperty('attr')){
+						_el.attr(arguments[0].attr);
+				}
+
 				if (arguments[0].hasOwnProperty('renderer')){
 					  _el.appendTo(arguments[0].renderer);
 				}
@@ -183,8 +198,8 @@ $(document).ready(function(){
 		_cubesSet       = [];
 
 		this.cmps       = {};
-		this.t 					= $.t = function(){			 
-			 return _self.translate[arguments[0]] ;
+		this.t 					= $.t = function(){
+			 return _self.translate[arguments[0]];
 		}
 
 
@@ -194,8 +209,12 @@ $(document).ready(function(){
 		*@return <object> a dataset
 		*/
 		_getSelection = function(){
+
 			if (_selection.length > 0){
-				var _currentSelection = _selection[_selection.length-1].data;
+
+				var _currentSelection;
+				_currentSelection = _selection[_selection.length-1].data;
+
 				return _currentSelection;
 			}
 			return _selection[0].data;
@@ -212,7 +231,8 @@ $(document).ready(function(){
 
 			var expr = params.expr;
 			var _newdata = [];
-			var _currentSelection = _getSelection();
+			var _currentSelection;
+			_currentSelection = _getSelection();
 
 			for (var j in _currentSelection){
 				  if (_currentSelection[j].hasOwnProperty(params.field)
@@ -311,7 +331,22 @@ $(document).ready(function(){
 			_dimensions[cfg.name] = {
 				label: cfg.label,
 				field: _fldName,
-				store: rs
+				store: rs,
+				find : function(str){
+					var _d = this;
+					_rs = false;
+					$.each(_d.store,function(i, elem){
+						if (elem[_d.field] == str ){
+							_rs = true;
+							return _rs;
+						}
+						if (i >= _d.store.length){
+							return _rs;
+						}
+					});
+
+					return _rs;
+				}
 			};
 
 			return rs;
@@ -336,14 +371,15 @@ $(document).ready(function(){
 		}
 
 		_fetch 	= function(cfg){
+			var _cubeName = cfg.cube;
 			 var _store = {};
 			 var _data  = [];
 			 var _fields =[];
-			 var _currentSelection = _getSelection();
+			 var _currentSelection = _getSelection(cfg);
 
 			 $.each(_currentSelection, function(id, item){
 				 		var queue = {};
-						$.each(_cubes[cfg].dimensions,function(idx, dimensionName){
+						$.each(_cubes[_cubeName].dimensions,function(idx, dimensionName){
 
 							  if (id == 0){
 									_fields.push(_dimensions[dimensionName].field);
@@ -354,6 +390,7 @@ $(document).ready(function(){
 						});
 						_data.push(queue);
 			 });
+
 			 _store.data   = _data;
 			 _store.fields = _fields;
 
@@ -368,8 +405,16 @@ $(document).ready(function(){
 				_filterlabel,
 				_filterRemove;
 
+				if (obj.hasOwnProperty('hidden')){
+					 return false;
+				}
+
+				if (obj.hasOwnProperty('displayField')){
+					  obj.label = _selection[_selection.length-1].data[obj.key][obj.displayField];
+				}
+
 				_filter 		= $('<div class="btnFilter"></div>');
-				_filterlabel 	= $('<span><div>'+obj.component+'</div><div>'+obj.expr+'</div></span>').appendTo(_filter);
+				_filterlabel 	= $('<span><div>'+obj.component+'</div><div>'+obj.label+'</div></span>').appendTo(_filter);
 				_filterRemove = $('<a href="#" data-info="'+obj.key+'">&times;</a>')
 				.click(function(){
 
@@ -384,7 +429,7 @@ $(document).ready(function(){
 
 		_mount = function(){
 
- 			$(_globals.filterBar).empty();
+ 			$(_globals.filterBar).find('.btnFilter').remove();
 
 			for (var sel in _selections){
 				var _nSelect = _selections[sel];
@@ -414,7 +459,7 @@ $(document).ready(function(){
 		components["cmp"] = function(cfg){
 
 				var _cmp   = this;
-				var _store = _fetch(cfg.cube);
+				var _store = _fetch(cfg);
 				this.fields = _store.fields;
 				this.store  = _store.data;
 				this.title = cfg.title;
@@ -532,9 +577,10 @@ $(document).ready(function(){
 									searching : false,
 									info 			: false,
 									language  : {
-										search 			: "Pesquisa Inteligente:",
-										info   			: "&nbsp;_TOTAL_ registros encontrados.",
-										zeroRecords : "Nenhum registro foi encontrado!"
+										search 				: "Pesquisa Inteligente:",
+										info   				: "&nbsp;_TOTAL_ registros encontrados.",
+										zeroRecords 	: "Nenhum registro foi encontrado!",
+										sInfoFiltered : "(filtrado do total de _MAX_ registros)"
 									}
 								}
 
@@ -656,8 +702,7 @@ $(document).ready(function(){
 					 _opt = {};
 					 $.extend(true, _opt, options, cfg.options);
 
-
-					 if ( cfg.options.hasOwnProperty('colors') && !cfg.options.colors.length ){
+					 if ( !cfg.options.colors.length ){
 							 var _newcolors = [];
 							 $.each(_cmp.labels, function(i, e){
 									if (typeof(cfg.options.colors[e])!='undefined'){
@@ -825,6 +870,64 @@ $(document).ready(function(){
 			}
 		}
 
+		components["cmpCombobox"] = function(cfg){
+
+			var _self = this;
+
+			 components["cmpTableWithSubtotal"].apply(this, arguments);
+
+			 this.draw = function(){
+
+				  var
+					_idx,
+					_element,
+					_cbox,     /* HTML select */
+					_cboxItem, /* HTML selection option*/
+					_label;
+
+					_cboxClear = "";
+					if (typeof(app.getSelectionByComponentName(cfg.title)) == 'object'){
+						_cboxClear = $('<a href="javascript:void(0)" title="limpar" class="btnClear">&times;</a>');
+						_cboxClear.click(function(){
+							app.removeSelectionByComponentName(cfg.title);
+						});
+					}
+				  _cbox = $('<select></select>');
+					_cbox.attr('id', cfg.el.replace("#","")+"_cmp");
+					_label = $('<caption></caption>').html(cfg.title);
+
+					_cboxItem = $('<option></option>');
+					_cboxItem.attr('value','all');
+					_cboxItem.html($.t('Select'));
+					_cboxItem.appendTo(_cbox);
+
+					$.each(_self.store, function(_idx, _element){
+
+						_cboxItem = $('<option></option>');
+						_cboxItem.attr('value', _element[cfg.valueField]);
+						_cboxItem.html(_element[cfg.displayField] + ' ('+_self.series[_idx]+')');
+						_cboxItem.appendTo(_cbox);
+
+						if (cfg.hasOwnProperty('defaultSelected')){
+							  cfg.defaultSelected(_cbox);
+						}
+					});
+
+					if (cfg.hasOwnProperty('events')){
+						  $.each(cfg.events,function(idx, fn){
+								_cbox.bind(idx,fn);
+							});
+					} else {
+						 console.debug("You didn't provide an event for this component");
+					}
+
+					$(cfg.el)
+					.exists(cfg)
+					.html([_label,_cbox,_cboxClear]);
+
+			 }
+		}
+
 		this.fitBarSize = function(config){
 
 			  var
@@ -898,10 +1001,25 @@ $(document).ready(function(){
 			_self.draw(_self.cfg);
 		}
 
+		this.getSelection = function(sid){
+
+			return {
+					sid: sid,
+					obj:_selections[sid]
+			}
+		}
+
 		/* public methods */
 		this.setSelection 	 = function(conf){
 
 			 var _rs = JSON.stringify(_selections);
+
+			 conf.label = conf.expr;
+
+			 if (conf.expr == 'all'){
+				 this.clearSelections();
+				 return true;
+			 }
 
 			 if (_rs.indexOf( conf.field ) > -1  ){
 				 return false;
@@ -912,11 +1030,42 @@ $(document).ready(function(){
 			 _mount();
 		};
 
+		this.getSelectionByComponentName = function(componentName){
+
+			var _self = this;
+			try {
+				if (_selections.length > 0){
+					for (var _idx = 0; _selections.length; _idx++ ){
+						 if (_selections[_idx].component == componentName){
+							   return _self.getSelection(_idx);
+							   break;
+						 }
+					}
+				}
+			}catch(err){
+
+			}
+
+			return false;
+
+		}
+
 		/* remove a selection */
 		this.removeSelection = function(sid){
 			_selection =  _selection.slice(0,1);
-			_selections = _selections.filter(function(v, x, arr){return x != sid}) ;
+			_selections = _selections.filter(function(v, x, arr){
+				return x != sid;
+			});
 			_mount();
+
+		}
+
+		this.removeSelectionByComponentName = function(componentName){
+			 var _sel;
+			 _sel = this.getSelectionByComponentName(componentName);
+			 if (_sel.hasOwnProperty('sid')){
+				 this.removeSelection(_sel.sid);
+			 }
 		}
 
 		/* clear all selections */
@@ -942,6 +1091,7 @@ $(document).ready(function(){
 					_selection = [{data:_store}];
 		}
 		this.selection        = _selection[0];
+		this.selections       = _selections;
 		this.createDimension 	= _createDimension;
 		this.dimensionsSet    = _dimensionsSet;
 		this.createCube 		  = _createCube;
