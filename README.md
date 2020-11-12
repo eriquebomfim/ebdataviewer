@@ -39,7 +39,7 @@ You need first define DIMENSIONS and CUBES as explained on app.js example
 
 ## For example:
 
-http://ebdataviewer.epizy.com
+https://tinyurl.com/ebdataviewer
 
 
 ## Support the project - DONATE
