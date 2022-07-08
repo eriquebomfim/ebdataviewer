@@ -54,7 +54,7 @@ You need first define DIMENSIONS and CUBES as explained on app.js example
 
 ## For example:
 
-https://tinyurl.com/ebdataviewer
+[https://tinyurl.com/ebdataviewer](https://tinyurl.com/ebdataviewer1)
 
 
 ## Support the project - DONATE
