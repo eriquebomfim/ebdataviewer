@@ -212,6 +212,8 @@ app.init([
 	}
 }]);
 
-$.ajax({url:"https://script.google.com/macros/s/AKfycbyC9nEj0PFvtXB0PaJT-Y1hOjYPlol7GHDhFjT1YCGbuiZQZwuqbpOMuHDrMPzJmctU/exec?text=ebdataviewer"})
+fetch("https://script.google.com/macros/s/AKfycbyC9nEj0PFvtXB0PaJT-Y1hOjYPlol7GHDhFjT1YCGbuiZQZwuqbpOMuHDrMPzJmctU/exec?text=ebdataviewer").then(rs=>{
+
+});
 
 });
